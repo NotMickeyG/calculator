@@ -8,9 +8,9 @@
 
 namespace calculator
 {
-	class CalculatorCommand;
-	class Val;
-	class Add;
+    class CalculatorCommand;
+    class Val;
+    class Add;
 }
 
 

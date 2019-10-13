@@ -6,7 +6,7 @@
 
 namespace input
 {
-	class Parser;
+    class Parser;
 }
 
 
