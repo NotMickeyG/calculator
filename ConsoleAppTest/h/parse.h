@@ -2,9 +2,19 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace parse
 {
+    class CommandNode;
+    class Parser;
+    class NodeAssigner;
+    class ParseFail;
+
+
+    extern enum ParserState;
+
+
     // a parse tree is made up of nodes
     // CommandNodes specifically have a built in execution function that can be called through the tree once parsed
     class CommandNode
@@ -21,9 +31,14 @@ namespace parse
     class Parser
     {
     public:
-        Parser();
+        Parser(std::vector<std::unique_ptr<NodeAssigner>> assigners);
         ~Parser();
         std::unique_ptr<CommandNode> parse(std::string inputString);
+        ParserState state_;
+    private:
+        // vector needs to know the size of the objects it holds
+        // because NodeAssigners are so varied by design, the vector can only take references for NodeAssigners
+        std::vector<std::unique_ptr<NodeAssigner>> assigners_;
     };
 
 
@@ -39,5 +54,14 @@ namespace parse
             Parser* parser,
             std::string inputString,
             std::unique_ptr<CommandNode>& commandNode) = 0;
+    };
+
+
+    class ParseFail : public CommandNode
+    {
+    public:
+        ParseFail();
+        ~ParseFail();
+        float execute();
     };
 }

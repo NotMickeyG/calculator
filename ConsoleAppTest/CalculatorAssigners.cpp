@@ -17,8 +17,8 @@ namespace calculator
         std::string inputString,
         std::unique_ptr<parse::CommandNode>& commandNode)
     {
-        commandNode = std::unique_ptr<parse::CommandNode>(      // TODO could be simplified?
-            new calculator::Val(std::stof(inputString)));
+        commandNode = std::unique_ptr<parse::CommandNode>(
+            new Val(std::stof(inputString)));
     }
 
 
@@ -38,6 +38,6 @@ namespace calculator
         std::string split2 = inputString.substr(result_ + check_.length());
 
         commandNode = std::unique_ptr<parse::CommandNode>(
-            new calculator::Add(parser->parse(split1), parser->parse(split2)));
+            new Add(parser->parse(split1), parser->parse(split2)));
     }
 }
