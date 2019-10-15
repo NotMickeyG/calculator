@@ -4,9 +4,11 @@
 
 #include "calculator_nodes.h"
 
-// calculator specific CommandAssigners for the CommandNodes in command_nodes.h
+// pass a vector or similar collection of these into the parser
+// the order pushed back to the vector becomes the order of operations with the last added being the most binding (don't forget Val)
 namespace calculator
 {
+    // checks and assigns node for numerical value
     class ValAssigner : public parse::NodeAssigner
     {
     public:
@@ -22,6 +24,7 @@ namespace calculator
     };
 
 
+    // checks and assigns node for addition
     class AddAssigner : public parse::NodeAssigner
     {
     public:
@@ -38,6 +41,7 @@ namespace calculator
     };
 
 
+    // checks and assigns node for subtraction
     class SubAssigner : public parse::NodeAssigner
     {
     public:
@@ -54,6 +58,7 @@ namespace calculator
     };
 
 
+    // checks and assigns node for multiplication
     class MulAssigner : public parse::NodeAssigner
     {
     public:
@@ -70,6 +75,7 @@ namespace calculator
     };
 
 
+    // checks and assigns node for division
     class DivAssigner : public parse::NodeAssigner
     {
     public:
