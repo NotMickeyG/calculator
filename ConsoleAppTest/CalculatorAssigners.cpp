@@ -1,12 +1,13 @@
+#include <iostream>
+
 #include "h/calculator_assigners.h"
 
 
 namespace calculator
 {
-
-    ValAssigner::ValAssigner() : check_("[-|+]?[0-9]+(.[0-9])?[0-9]*") {}
+    ValAssigner::ValAssigner() : check_("^[-|+]?[0-9]+(\\.[0-9]+)?$") {}
     ValAssigner::~ValAssigner() {}
-    bool ValAssigner::check(std::string inputString)
+    bool ValAssigner::check(std::string& inputString)
     {
         // remove whitespace
         inputString.erase(std::remove(inputString.begin(), inputString.end(), ' '), inputString.end());
@@ -24,7 +25,7 @@ namespace calculator
 
     AddAssigner::AddAssigner() : check_(" + ") {}
     AddAssigner::~AddAssigner() {}
-    bool AddAssigner::check(std::string inputString)
+    bool AddAssigner::check(std::string& inputString)
     {
         result_ = inputString.find(check_);
         return result_ != std::string::npos;

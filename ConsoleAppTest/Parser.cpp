@@ -5,9 +5,6 @@
 
 namespace parse
 {
-    enum ParserState { run, error, exit };
-
-
     ParseFail::ParseFail() {}
     ParseFail::~ParseFail() {}
     float ParseFail::execute()

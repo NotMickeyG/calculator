@@ -12,7 +12,7 @@ namespace calculator
     public:
         ValAssigner();
         ~ValAssigner();
-        bool check(std::string inputString) override;
+        bool check(std::string& inputString) override;
         void assign(
             parse::Parser* parser,
             std::string inputString,
@@ -27,7 +27,7 @@ namespace calculator
     public:
         AddAssigner();
         ~AddAssigner();
-        bool check(std::string inputString) override;
+        bool check(std::string& inputString) override;
         void assign(
             parse::Parser* parser,
             std::string inputString,

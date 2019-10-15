@@ -12,7 +12,8 @@ namespace parse
     class ParseFail;
 
 
-    extern enum ParserState;
+    // ParserState values need to be exposed to code using the parser so it get's defined here
+    enum ParserState { run, error, exit };
 
 
     // a parse tree is made up of nodes
@@ -49,7 +50,7 @@ namespace parse
     public:
         NodeAssigner() {}
         ~NodeAssigner() {}
-        virtual bool check(std::string inputString) = 0;
+        virtual bool check(std::string& inputString) = 0;
         virtual void assign(
             Parser* parser,
             std::string inputString,
