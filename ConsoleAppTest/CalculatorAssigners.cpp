@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "h/calculator_assigners.h"
 
 
@@ -69,4 +71,73 @@ namespace calculator
     template class OpAssigner<Div>;
     template class OpAssigner<Mod>;
     template class OpAssigner<Pow>;
+
+
+
+
+    BracketChecker::BracketChecker(BracketAssigner& assigner) :
+        assigner_(assigner),
+        start_("("),
+        end_(")")
+    {}
+
+    BracketChecker::~BracketChecker() {}
+
+    bool BracketChecker::check(std::string& inputString)
+    {
+        startResult_ = inputString.find(start_);
+        endResult_ = inputString.find_last_of(end_);
+
+        // true if no subtree yet given to BracketAssigner && if there is an opening and closing bracket
+        return
+            !assigner_.subTree_ &&
+            startResult_ != std::string::npos &&
+            endResult_ != std::string::npos;
+    }
+
+    void BracketChecker::assign(
+        parse::Parser* parser,
+        std::string inputString,
+        std::unique_ptr<parse::CommandNode>& commandNode)
+    {
+        std::string inner = inputString.substr(startResult_ + 1, endResult_ - startResult_ - 1);
+        std::string outer = inputString;
+        outer.erase(startResult_ + 1, endResult_ - startResult_ - 1);
+
+        std::cout << "\ninner: " << inner << std::endl;
+        std::cout << "outer: " << outer << std::endl;
+
+        assigner_.subTree_ = parser->parse(inner);
+        commandNode = parser->parse(outer);
+
+        //commandNode = std::unique_ptr<parse::CommandNode>(
+        //    new Val(0));
+    }
+
+
+
+
+    BracketAssigner::BracketAssigner() : check_("^\\(\\)$") {}
+
+    BracketAssigner::~BracketAssigner() {}
+
+    bool BracketAssigner::check(std::string& inputString)
+    {
+        // Remove whitespace
+        inputString.erase(std::remove(inputString.begin(), inputString.end(), ' '), inputString.end());
+
+        // true if there is a subtree to assign && if the string matches "()"
+        return
+            subTree_ &&
+            std::regex_match(inputString, check_);
+    }
+
+    void BracketAssigner::assign(
+        parse::Parser* parser,
+        std::string inputString,
+        std::unique_ptr<parse::CommandNode>& commandNode)
+    {
+        commandNode = std::unique_ptr<parse::CommandNode>(
+            new Bracket(std::move(subTree_)));
+    }
 }

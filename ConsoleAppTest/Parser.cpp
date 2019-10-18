@@ -5,7 +5,10 @@
 
 namespace parse
 {
-    ParseFail::ParseFail() {}
+    ParseFail::ParseFail(Parser& parser)
+    {
+        parser.state_ = error;
+    }
     ParseFail::~ParseFail() {}
     float ParseFail::execute()
     {
@@ -31,9 +34,10 @@ namespace parse
             }
         }
 
+        
+
         // if no assigner can be matched, the input has failed to match the parser
-        state_ = error;
-        commandNode = std::unique_ptr<CommandNode>(new ParseFail);
+        commandNode = std::unique_ptr<CommandNode>(new ParseFail(*this));
         return commandNode;
     }
 }

@@ -61,7 +61,7 @@ namespace parse
     class ParseFail : public CommandNode
     {
     public:
-        ParseFail();
+        ParseFail(Parser& parser);
         ~ParseFail();
         float execute();
     };

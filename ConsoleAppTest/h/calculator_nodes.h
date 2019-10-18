@@ -17,6 +17,19 @@ namespace calculator
     };
 
 
+    // Bracket is a placeholder value that parses it's contents as a subtree
+    // it then returns the value calculated by that subtree
+    class Bracket : public parse::CommandNode
+    {
+    public:
+        Bracket(std::unique_ptr<parse::CommandNode> subTree);
+        ~Bracket();
+        float execute() override;
+    private:
+        std::unique_ptr<parse::CommandNode> subTree_;
+    };
+
+
     // Add is an operator value for recognised addition
     class Add : public parse::CommandNode
     {

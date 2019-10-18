@@ -12,6 +12,14 @@ namespace calculator
     }
 
 
+    Bracket::Bracket(std::unique_ptr<CommandNode> subTree) : subTree_(std::move(subTree)) {}
+    Bracket::~Bracket() {}
+    float Bracket::execute()
+    {
+        return subTree_->execute();
+    }
+
+
     Add::Add(std::unique_ptr<CommandNode> add1, std::unique_ptr<CommandNode> add2) :
         add1_(std::move(add1)),
         add2_(std::move(add2))
