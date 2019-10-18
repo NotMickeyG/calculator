@@ -67,4 +67,30 @@ namespace calculator
         std::unique_ptr<parse::CommandNode> div1_;
         std::unique_ptr<parse::CommandNode> div2_;
     };
+
+
+    // Mod is an operator value for recognised modulo
+    class Mod : public parse::CommandNode
+    {
+    public:
+        Mod(std::unique_ptr<parse::CommandNode> split1, std::unique_ptr<parse::CommandNode> split2);
+        ~Mod();
+        float execute() override;
+    private:
+        std::unique_ptr<parse::CommandNode> split1_;
+        std::unique_ptr<parse::CommandNode> split2_;
+    };
+
+
+    // Pow is an operator value for recognised power
+    class Pow : public parse::CommandNode
+    {
+    public:
+        Pow(std::unique_ptr<parse::CommandNode> split1, std::unique_ptr<parse::CommandNode> split2);
+        ~Pow();
+        float execute() override;
+    private:
+        std::unique_ptr<parse::CommandNode> split1_;
+        std::unique_ptr<parse::CommandNode> split2_;
+    };
 }

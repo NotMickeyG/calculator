@@ -67,4 +67,6 @@ namespace calculator
     template class OpAssigner<Sub>;
     template class OpAssigner<Mul>;
     template class OpAssigner<Div>;
+    template class OpAssigner<Mod>;
+    template class OpAssigner<Pow>;
 }

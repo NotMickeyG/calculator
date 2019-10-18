@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "h/calculator_nodes.h"
 
 namespace calculator
@@ -51,5 +53,27 @@ namespace calculator
     float Div::execute()
     {
         return div1_->execute() / div2_->execute();
+    }
+
+
+    Mod::Mod(std::unique_ptr<CommandNode> split1, std::unique_ptr<CommandNode> split2) :
+        split1_(std::move(split1)),
+        split2_(std::move(split2))
+    {}
+    Mod::~Mod() {}
+    float Mod::execute()
+    {
+        return std::fmod(split1_->execute(), split2_->execute());
+    }
+
+
+    Pow::Pow(std::unique_ptr<CommandNode> split1, std::unique_ptr<CommandNode> split2) :
+        split1_(std::move(split1)),
+        split2_(std::move(split2))
+    {}
+    Pow::~Pow() {}
+    float Pow::execute()
+    {
+        return std::powf(split1_->execute(), split2_->execute());
     }
 }
