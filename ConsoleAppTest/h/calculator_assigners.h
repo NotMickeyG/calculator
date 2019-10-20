@@ -143,13 +143,9 @@ namespace calculator
     // that does require adjacent brackets being handled at the same time though
 
     // ug this feels way too complex but I can't see any way of nicely doing it whilst still handling strings like I am now
-    // how the hell does the javascript interpreter do this kind of shit lol
     // 
 
     // incrementalise?
-
-    // then parse and execute inners
-
 
     // then parse outers
 }

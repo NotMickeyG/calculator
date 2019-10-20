@@ -129,8 +129,8 @@ namespace calculator
 
         // true if no subtrees yet given to subTree layer && if there are brackets
         return
-            assigner_.subTrees_.back().empty() &&
-            !startResults_.empty();
+            !startResults_.empty() &&
+            assigner_.subTrees_.back().empty();
     }
 
     void BracketChecker::assign(
@@ -164,7 +164,7 @@ namespace calculator
             std::cout << subTree->execute() << std::endl;
             assigner_.subTrees_.pop_back();
             // add like this I guess
-            //assigner_.subTrees_.back().push_back(std::move(subTree));
+            assigner_.subTrees_.back().push_back(std::move(subTree));
 
 
             outer.erase(startResult + 1, endResult - startResult - 1);
@@ -175,11 +175,10 @@ namespace calculator
         
         std::cout << "outer: " << outer << std::endl;
 
-        //
-        //commandNode = parser->parse(outer);
+        commandNode = parser->parse(outer);
 
-        commandNode = std::unique_ptr<parse::CommandNode>(
-            new Val(0));
+        /*commandNode = std::unique_ptr<parse::CommandNode>(
+            new Val(0));*/
     }
 
 
@@ -196,7 +195,7 @@ namespace calculator
 
         // true if there is a subtree to assign && if the string matches "()"
         return
-            subTree_ &&
+            !subTrees_.back().empty() &&
             std::regex_match(inputString, check_);
     }
 
@@ -206,6 +205,8 @@ namespace calculator
         std::unique_ptr<parse::CommandNode>& commandNode)
     {
         commandNode = std::unique_ptr<parse::CommandNode>(
-            new Bracket(std::move(subTree_)));
+            new Bracket(std::move(subTrees_.back().back())));
+
+        subTrees_.back().pop_back();
     }
 }
