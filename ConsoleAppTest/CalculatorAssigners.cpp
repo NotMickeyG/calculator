@@ -56,9 +56,15 @@ namespace calculator
         std::string split1 = inputString.substr(0, result_);
         std::string split2 = inputString.substr(result_ + check_.length());
 
+        // DON'T PUT parser->parse(split1) STRAIGHT IN TO CONSTRUCTOR
+        // The order of functions called in a constructor is undefined behaviour
+        std::unique_ptr<parse::CommandNode> tree1 = parser->parse(split1);
+        std::unique_ptr<parse::CommandNode> tree2 = parser->parse(split2);
+
         // the two splits are parsed then added to the templated CommandNode
         commandNode = std::unique_ptr<parse::CommandNode>(
-            new OP(parser->parse(split1), parser->parse(split2)));
+            new OP(std::move(tree1), std::move(tree2))
+            );
     }
 
 

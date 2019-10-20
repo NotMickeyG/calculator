@@ -82,7 +82,6 @@ namespace calculator
             std::unique_ptr<parse::CommandNode>& commandNode) override;
 
         std::vector<std::vector<std::unique_ptr<parse::CommandNode>>> subTrees_;
-        std::unique_ptr<parse::CommandNode> subTree_;
     private:
         std::regex check_;
     };
