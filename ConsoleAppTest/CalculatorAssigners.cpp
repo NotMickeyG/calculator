@@ -138,9 +138,6 @@ namespace calculator
         std::string inputString,
         std::unique_ptr<parse::CommandNode>& commandNode)
     {
-        //std::string inner = inputString.substr(startResult_ + 1, endResult_ - startResult_ - 1);
-        
-
         // because the same BracketsChecker is used for all parses,
         // the results need to be held locally whilst parsing each inner bracket string
         std::vector<size_t> startResults = startResults_;
@@ -156,29 +153,19 @@ namespace calculator
 
             std::string inner = inputString.substr(startResult + 1, endResult - startResult - 1);
 
-            //here we would add a layer to subtree stack, parse, pop layer then add the parsed pointer to subtree stack layer
-            std::cout << "inner: " << inner << std::endl;
-
+            //here we add a layer to subtree stack, parse, pop layer then add the parsed pointer to subtree stack layer
             assigner_.subTrees_.push_back(std::vector<std::unique_ptr<parse::CommandNode>>());
             std::unique_ptr<parse::CommandNode> subTree = parser->parse(inner);
-            std::cout << subTree->execute() << std::endl;
             assigner_.subTrees_.pop_back();
-            // add like this I guess
             assigner_.subTrees_.back().push_back(std::move(subTree));
-
 
             outer.erase(startResult + 1, endResult - startResult - 1);
 
             startResults.pop_back();
             endResults.pop_back();
         }
-        
-        std::cout << "outer: " << outer << std::endl;
 
         commandNode = parser->parse(outer);
-
-        /*commandNode = std::unique_ptr<parse::CommandNode>(
-            new Val(0));*/
     }
 
 

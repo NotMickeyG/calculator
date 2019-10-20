@@ -1,0 +1,14 @@
+    // the idea is "dunno (whatever (inside)) stuff (numbers)" is caught by bracket checker
+    // string is split into "dunno () stuff ()", "whatever (inside)", "numbers" etc
+    // parse "whatever (inside)", "numbers" etc in reverse order to get unique pointer stack
+    // pass pointers to bracket assigner
+    // parse "dunno () stuff ()"
+    // "()" caught like a Val but by bracket assigner which currently contains the unique pointers
+    // bracket assigner returns that unique pointer in a Bracket CommandNode
+    // bracket checker returns the parsed "dunno () stuff"
+
+    // note: stack is created in reverse order, ie push "numbers" the push "whatever (inside)"
+    // then "dunno () stuff ()" is parsed in forward order
+    // (seems like it might not but it does! remember, loose binding operators get parsed first)
+    // anyway, the forward order matches the popping for the reversed stack
+    // so it all works out without needing a queue or something
