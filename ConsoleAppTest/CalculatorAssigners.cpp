@@ -77,22 +77,86 @@ namespace calculator
 
     BracketChecker::BracketChecker(BracketAssigner& assigner) :
         assigner_(assigner),
-        start_("("),
-        end_(")")
-    {}
+        start_('('),
+        end_(')')
+    {
+        //assigner_.subTrees_.push_back(std::queue<std::unique_ptr<parse::CommandNode>>());
+    }
 
     BracketChecker::~BracketChecker() {}
 
     bool BracketChecker::check(std::string& inputString)
     {
-        startResult_ = inputString.find(start_);
-        endResult_ = inputString.find_last_of(end_);
+        /*startResult_ = inputString.find(start_);
+        endResult_ = inputString.find_last_of(end_);*/
 
-        // true if no subtree yet given to BracketAssigner && if there is an opening and closing bracket
+        size_t index = 0;
+
+        while (index < inputString.length())
+        {
+            startResults_.clear();
+            endResults_.clear();
+            int bracketCount = 0;
+
+            for (index = 0; index < inputString.length(); index++)
+            {
+                if (inputString[index] == start_ &&
+                    bracketCount++ == 0)
+                {
+                    startResults_.push_back(index);
+                }
+
+                if (inputString[index] == end_ &&
+                    --bracketCount == 0)
+                {
+                    endResults_.push_back(index);
+                }
+
+                // if we go negative there was a missed opening bracket so put one in and restart loop
+                if (bracketCount < 0)
+                {
+                    inputString.insert(inputString.begin(), '(');
+                    break;
+                }
+            }
+        }
+
+        // similarly if we're missing the closing bracket for this layers outer brackets, add it on
+        // this can be done on each layer so it doesn't need to restart the loop
+        if (startResults_.size() > endResults_.size())
+        {
+            endResults_.push_back(index);
+            inputString.push_back(')');
+        }
+        
+
+        //// using break makes the order of checking clearer than having a big loop with a '(' and ')' branching
+        //for (; index < inputString.length() - 1; index++)
+        //{
+        //    //
+        //    if (inputString[index] == start_ &&
+        //        inputString[index + 1] != end_)
+        //    {
+        //        startResult_ = index;
+        //        break;
+        //    }
+        //}
+
+        //for (; index < inputString.length(); index++)
+        //{
+        //    //std::cout << inputString[index] << std::endl;
+        //    if (inputString[index] == end_)
+        //    {
+        //        endResult_ = index;
+        //        break;
+        //    }
+        //}
+
+        // true if no subtrees yet given to BracketAssigner && if there is an opening and closing bracket
         return
-            !assigner_.subTree_ &&
-            startResult_ != std::string::npos &&
-            endResult_ != std::string::npos;
+            //assigner_.subTrees_.back().empty() &&
+            !startResults_.empty() &&
+            !endResults_.empty();
     }
 
     void BracketChecker::assign(
@@ -100,18 +164,36 @@ namespace calculator
         std::string inputString,
         std::unique_ptr<parse::CommandNode>& commandNode)
     {
-        std::string inner = inputString.substr(startResult_ + 1, endResult_ - startResult_ - 1);
-        std::string outer = inputString;
-        outer.erase(startResult_ + 1, endResult_ - startResult_ - 1);
+        //std::string inner = inputString.substr(startResult_ + 1, endResult_ - startResult_ - 1);
+        std::cout << "\n" << std::endl;
 
-        std::cout << "\ninner: " << inner << std::endl;
+        std::string outer = inputString;
+
+        // loop through backwards to work with string erase() and also means subtrees can be a 2d vector rather than a vector of queues
+        while (!startResults_.empty())
+        {
+            size_t startResult = startResults_.back();
+            size_t endResult = endResults_.back();
+
+            std::string inner = inputString.substr(startResult + 1, endResult - startResult - 1);
+
+            //here we would add a layer to subtree stack, parse, pop layer then add the parsed pointer to subtree stack layer
+            std::cout << "inner: " << inner << std::endl;
+
+            outer.erase(startResult + 1, endResult - startResult - 1);
+
+            startResults_.pop_back();
+            endResults_.pop_back();
+        }
+
+        
         std::cout << "outer: " << outer << std::endl;
 
-        assigner_.subTree_ = parser->parse(inner);
-        commandNode = parser->parse(outer);
+        //assigner_.subTree_ = parser->parse(inner);
+        //commandNode = parser->parse(outer);
 
-        //commandNode = std::unique_ptr<parse::CommandNode>(
-        //    new Val(0));
+        commandNode = std::unique_ptr<parse::CommandNode>(
+            new Val(0));
     }
 
 
