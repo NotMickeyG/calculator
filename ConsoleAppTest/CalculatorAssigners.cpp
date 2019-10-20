@@ -80,16 +80,14 @@ namespace calculator
         start_('('),
         end_(')')
     {
-        //assigner_.subTrees_.push_back(std::queue<std::unique_ptr<parse::CommandNode>>());
+        // TODO for the most part BracketChecker is handling the subTree stack stack so maybe it should be a member of BracketChecker?
+        assigner_.subTrees_.push_back(std::vector<std::unique_ptr<parse::CommandNode>>());
     }
 
     BracketChecker::~BracketChecker() {}
 
     bool BracketChecker::check(std::string& inputString)
     {
-        /*startResult_ = inputString.find(start_);
-        endResult_ = inputString.find_last_of(end_);*/
-
         size_t index = 0;
 
         while (index < inputString.length())
@@ -121,42 +119,18 @@ namespace calculator
             }
         }
 
-        // similarly if we're missing the closing bracket for this layers outer brackets, add it on
+        // similarly if we're missing the closing bracket for this layer's outer brackets, add it on
         // this can be done on each layer so it doesn't need to restart the loop
         if (startResults_.size() > endResults_.size())
         {
             endResults_.push_back(index);
             inputString.push_back(')');
         }
-        
 
-        //// using break makes the order of checking clearer than having a big loop with a '(' and ')' branching
-        //for (; index < inputString.length() - 1; index++)
-        //{
-        //    //
-        //    if (inputString[index] == start_ &&
-        //        inputString[index + 1] != end_)
-        //    {
-        //        startResult_ = index;
-        //        break;
-        //    }
-        //}
-
-        //for (; index < inputString.length(); index++)
-        //{
-        //    //std::cout << inputString[index] << std::endl;
-        //    if (inputString[index] == end_)
-        //    {
-        //        endResult_ = index;
-        //        break;
-        //    }
-        //}
-
-        // true if no subtrees yet given to BracketAssigner && if there is an opening and closing bracket
+        // true if no subtrees yet given to subTree layer && if there are brackets
         return
-            //assigner_.subTrees_.back().empty() &&
-            !startResults_.empty() &&
-            !endResults_.empty();
+            assigner_.subTrees_.back().empty() &&
+            !startResults_.empty();
     }
 
     void BracketChecker::assign(
@@ -165,31 +139,43 @@ namespace calculator
         std::unique_ptr<parse::CommandNode>& commandNode)
     {
         //std::string inner = inputString.substr(startResult_ + 1, endResult_ - startResult_ - 1);
-        std::cout << "\n" << std::endl;
+        
+
+        // because the same BracketsChecker is used for all parses,
+        // the results need to be held locally whilst parsing each inner bracket string
+        std::vector<size_t> startResults = startResults_;
+        std::vector<size_t> endResults = endResults_;
 
         std::string outer = inputString;
 
         // loop through backwards to work with string erase() and also means subtrees can be a 2d vector rather than a vector of queues
-        while (!startResults_.empty())
+        while (!startResults.empty())
         {
-            size_t startResult = startResults_.back();
-            size_t endResult = endResults_.back();
+            size_t startResult = startResults.back();
+            size_t endResult = endResults.back();
 
             std::string inner = inputString.substr(startResult + 1, endResult - startResult - 1);
 
             //here we would add a layer to subtree stack, parse, pop layer then add the parsed pointer to subtree stack layer
             std::cout << "inner: " << inner << std::endl;
 
+            assigner_.subTrees_.push_back(std::vector<std::unique_ptr<parse::CommandNode>>());
+            std::unique_ptr<parse::CommandNode> subTree = parser->parse(inner);
+            std::cout << subTree->execute() << std::endl;
+            assigner_.subTrees_.pop_back();
+            // add like this I guess
+            //assigner_.subTrees_.back().push_back(std::move(subTree));
+
+
             outer.erase(startResult + 1, endResult - startResult - 1);
 
-            startResults_.pop_back();
-            endResults_.pop_back();
+            startResults.pop_back();
+            endResults.pop_back();
         }
-
         
         std::cout << "outer: " << outer << std::endl;
 
-        //assigner_.subTree_ = parser->parse(inner);
+        //
         //commandNode = parser->parse(outer);
 
         commandNode = std::unique_ptr<parse::CommandNode>(

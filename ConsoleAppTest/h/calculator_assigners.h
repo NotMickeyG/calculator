@@ -81,7 +81,7 @@ namespace calculator
             std::string inputString,
             std::unique_ptr<parse::CommandNode>& commandNode) override;
 
-        //std::vector<std::queue<std::unique_ptr<parse::CommandNode>>> subTrees_;
+        std::vector<std::vector<std::unique_ptr<parse::CommandNode>>> subTrees_;
         std::unique_ptr<parse::CommandNode> subTree_;
     private:
         std::regex check_;
@@ -147,9 +147,9 @@ namespace calculator
     // 
 
     // incrementalise?
-    // bracket result queue
-    // print strings for each inner result & outer result
 
-    // then parse inners
+    // then parse and execute inners
+
+
     // then parse outers
 }
