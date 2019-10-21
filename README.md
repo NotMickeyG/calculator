@@ -2,6 +2,8 @@
 
 This is a simple terminal calculator and parser made using string and regex handling as an introduction to C++ for myself.
 
+The calculator can handle simple operations, (+, -, *, /, %, ^) in normal calculator format "1 + 2 * 3 ^ 2", note the spacing. It can also handle brackets to change the order of operations, eg "(1 + 2) ^ ((3 - 4) * 5)"
+
 Created as a Visual Studio C++ project so may be difficult to compile as is without Visual Studio.
 
 ## TODO
